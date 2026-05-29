@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="section-title">{{ poll.title }}</h1>
+      <p class="text-muted mb-0">Poll results are shown below and refresh automatically every few seconds.</p>
+    </div>
+    <a class="btn btn-outline-primary align-self-md-start" href="{{ url_for('poll_details', public_id=poll.public_id) }}">Poll Details</a>
+  </div>
+  <div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="stat-card"><span id="totalVotes">{{ total }}</span><small>Total votes</small></div></div>
+    <div class="col-md-4"><div class="stat-card"><span id="participation">{{ participation }}%</span><small>Participation estimate</small></div></div>
+    <div class="col-md-4"><div class="stat-card"><span id="pollState">{{ 'Active' if poll.is_active else 'Closed' }}</span><small>Status</small></div></div>
+  </div>
+  <div class="row g-4" data-results-url="{{ url_for('poll_results_api', public_id=poll.public_id) }}">
+    <div class="col-lg-7"><div class="chart-card"><canvas id="barChart"></canvas></div></div>
+    <div class="col-lg-5"><div class="chart-card"><canvas id="pieChart"></canvas></div></div>
+  </div>
+  <div class="results-panel mt-4">
+    <h2>Vote Breakdown</h2>
+    {% if result_rows %}
+      <div class="results-list" id="resultsList">
+        {% for row in result_rows %}
+          <div class="result-row" data-result-option="{{ row.id }}">
+            <div class="result-heading">
+              <strong>{{ row.label }}</strong>
+              <span><span class="result-votes">{{ row.votes }}</span> votes · <span class="result-percentage">{{ row.percentage }}</span>%</span>
+            </div>
+            <div class="progress" role="progressbar" aria-label="{{ row.label }}" aria-valuenow="{{ row.percentage }}" aria-valuemin="0" aria-valuemax="100">
+              <div class="progress-bar" style="width: {{ row.percentage }}%"></div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">No options are available for this poll.</div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/results.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <div class="vote-shell">
+    <div class="mb-4">
+      <span class="badge text-bg-{{ 'success' if poll.mode == 'quick' else 'primary' }}">{{ 'Anonymous quick poll' if poll.mode == 'quick' else 'Authenticated election' }}</span>
+      <h1 class="mt-3">{{ poll.title }}</h1>
+      <p class="text-muted">{{ poll.description }}</p>
+      <div class="countdown-box compact" data-expires="{{ poll.expiry_time.isoformat() }}Z">
+        <span class="countdown-label">Time remaining</span>
+        <strong class="countdown">Calculating...</strong>
+      </div>
+    </div>
+    {% if not poll.is_active %}
+      <div class="alert alert-warning">Voting is not currently active for this poll.</div>
+    {% elif already_voted %}
+      <div class="alert alert-info">You have already voted in this poll.</div>
+      <a class="btn btn-primary" href="{{ url_for('results', public_id=poll.public_id) }}">See Results</a>
+    {% else %}
+      <form method="post">
+        {{ form.hidden_tag() }}
+        {{ form.option_id(id="optionId") }}
+        <div class="option-grid">
+          {% for option in poll.options %}
+            <button class="vote-option" type="button" data-option="{{ option.id }}">{{ option.option_text }}</button>
+          {% endfor %}
+        </div>
+        <div class="mt-4">{{ form.submit(class="btn btn-primary btn-lg", disabled=True, id="voteSubmit") }}</div>
+      </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

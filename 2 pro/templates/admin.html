@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="container py-5">
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 mb-4">
+    <div>
+      <h1 class="section-title">Audit Trail</h1>
+      <p class="text-muted mb-0">Review vote integrity events and export CSV records.</p>
+    </div>
+    <a class="btn btn-primary align-self-md-start" href="{{ url_for('export_audit_csv') }}">Export CSV</a>
+  </div>
+  <div class="table-responsive audit-table">
+    <table class="table align-middle">
+      <thead>
+        <tr>
+          <th>ID</th><th>Poll</th><th>Voter</th><th>Action</th><th>IP</th><th>Timestamp</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs.items %}
+          <tr>
+            <td>{{ log.id }}</td>
+            <td>{{ log.poll.title }}</td>
+            <td>{{ log.voter.username if log.voter else 'Anonymous' }}</td>
+            <td><span class="badge text-bg-success">{{ log.action }}</span></td>
+            <td>{{ log.ip_address }}</td>
+            <td>{{ log.timestamp.strftime('%d %b %Y, %H:%M:%S') }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" class="text-center text-muted py-4">No audit events yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% set polls = logs %}
+  {% set q = '' %}
+  {% include "_pagination.html" with context %}
+</section>
+{% endblock %}

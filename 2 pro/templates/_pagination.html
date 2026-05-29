@@ -1,0 +1,15 @@
+{% if polls.pages > 1 %}
+<nav class="mt-4">
+  <ul class="pagination justify-content-center">
+    {% for page_num in polls.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+      {% if page_num %}
+        <li class="page-item {{ 'active' if page_num == polls.page else '' }}">
+          <a class="page-link" href="{{ url_for(request.endpoint, page=page_num, q=q) }}">{{ page_num }}</a>
+        </li>
+      {% else %}
+        <li class="page-item disabled"><span class="page-link">...</span></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}

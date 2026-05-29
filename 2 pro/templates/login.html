@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="auth-wrap">
+  <div class="auth-card">
+    <h1>Welcome back</h1>
+    <p class="text-muted">Sign in to manage elections, polls, and audit trails.</p>
+    <form method="post">
+      {{ form.hidden_tag() }}
+      <div class="mb-3">{{ form.email.label(class="form-label") }}{{ form.email(class="form-control") }}</div>
+      <div class="mb-3">{{ form.password.label(class="form-label") }}{{ form.password(class="form-control") }}</div>
+      {{ form.submit(class="btn btn-primary w-100") }}
+    </form>
+    <p class="small text-center mt-3 mb-0">Demo admin: admin@example.com / admin123</p>
+  </div>
+</section>
+{% endblock %}
